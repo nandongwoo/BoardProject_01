@@ -41,9 +41,6 @@
         <td>${board.boardWriter}</td>
         <td>${board.createdAt}</td>
         <td>${board.boardHits}</td>
-        <td>
-            <button class="btn btn-primary" onclick="delete_fn('${board.id}')">삭제</button>
-        </td>
     </tr>
     <br>
 </c:forEach>
