@@ -112,6 +112,8 @@
                 }
                 output += "</table>";
                 result.innerHTML = output;
+                // innerHTML = 해당 부분의 내용에 덮어쓰기가 됨.
+                // model = 이름을 다르게하면 하나의 메서드에서도 model을 여러번 쓸 수있음.
                 document.getElementById("comment-writer").value = "";
                 document.getElementById("comment-contents").value = "";
             },
