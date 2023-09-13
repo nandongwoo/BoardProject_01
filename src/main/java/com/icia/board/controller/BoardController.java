@@ -2,8 +2,10 @@ package com.icia.board.controller;
 
 import com.icia.board.dto.BoardDTO;
 import com.icia.board.dto.BoardFileDTO;
+import com.icia.board.dto.CommentDTO;
 import com.icia.board.service.BoardService;
 //import jdk.internal.icu.text.NormalizerBase;
+import com.icia.board.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,8 +18,13 @@ import java.util.List;
 @Controller
 @RequestMapping("/board")
 public class BoardController {
-    @Autowired
+    @Autowired // 어노테인션은 바로 밑에줄만 적용.
     private BoardService boardService;
+    @Autowired
+    private CommentService commentService;
+
+
+
 
 
 
@@ -45,10 +52,18 @@ public class BoardController {
         boardService.updateHits(id);
         BoardDTO boardDTO = boardService.detail(id);
         model.addAttribute("board", boardDTO);
+
         // 첨부된 파일이 있다면 파일을 가져옴
         if (boardDTO.getFileAttached()==1){
             List<BoardFileDTO> boardFileDTOList = boardService.findFile(id);
             model.addAttribute("boardFileList", boardFileDTOList);
+        }
+
+        List<CommentDTO> commentDTOList = commentService.findAll(id);
+        if (commentDTOList.size() == 0) {
+            model.addAttribute("commentList", null);
+        }else{
+            model.addAttribute("commentList", commentDTOList);
         }
         return "boardDetail";
     }

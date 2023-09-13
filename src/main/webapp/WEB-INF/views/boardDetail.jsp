@@ -51,13 +51,30 @@
     <input type="button" value="등록" onclick="comment_write()">
 </div>
 <div id="comment-list-area">
-
+    <c:choose> <%-- choose,when,otherwise = if/else문과 같은 기능   --%>
+        <c:when test="${commentList == null}">
+            <h3>작성 된 댓글이 없습니다.</h3>
+        </c:when>
+        <c:otherwise>
+            <table id="comment-list">
+                <tr>
+                    <th>작성자</th>
+                    <th>내용</th>
+                    <th>작성시간</th>
+                </tr>
+                <c:forEach items="${commentList}" var="comment">
+                    <tr>
+                        <td>${comment.commetnWriter}</td>
+                        <td>${comment.commetnContents}</td>
+                        <td>${comment.createAt}</td>
+                        <td></td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:otherwise>
+    </c:choose>
 </div>
-<div>
-    <c:forEach items='${commentList}' var="comment">
 
-    </c:forEach>
-</div>
 <%@include file="component/footer.jsp" %>
 </body>
 <script>
