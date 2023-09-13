@@ -1,108 +1,103 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>Title</title>
-    <link rel="stylesheet" href="/resources/css/main.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-<%@include file="component/header.jsp" %>
-<%@include file="component/nav.jsp" %>
-
-<div class="container">
-    <div id="board-detail">
-        <table class="table table-bordered">
-            <div class="mt-5">
-                <tr>
-                    <td>${board.boardWriter}</td>
-                    <td>${board.boardTitle}</td>
-                    <td>${board.boardHits}</td>
-                    <br>
-                    <td>${board.createdAt}</td>
-                    <br><br>
-                    <td>${board.boardContents}</td>
-
-                    <c:if test="${board.fileAttached == 1}">
-                <tr>
-                    <th>image</th>
-                    <td>
-                        <c:forEach items="${boardFileList}" var="boardFile">
-                            <img src="${pageContext.request.contextPath}/upload/${boardFile.storedFileName}"
-                                 alt="" width="100" height="100">
-                        </c:forEach>
-                    </td>
-                </tr>
-                </c:if>
+<div id="section">
+    <table>
+        <tr>
+            <th>id</th>
+            <td>${board.id}</td>
+        <tr>
+            <th>writer</th>
+            <td>${board.boardWriter}</td>
+        </tr>
+        <tr>
+            <th>date</th>
+            <td>${board.createdAt}</td>
+        </tr>
+        <tr>
+            <th>hits</th>
+            <td>${board.boardHits}</td>
+        </tr>
+        <tr>
+            <th>title</th>
+            <td>${board.boardTitle}</td>
+        </tr>
+        <tr>
+            <th>contents</th>
+            <td>${board.boardContents}</td>
+        </tr>
+        <c:if test="${board.fileAttached == 1}">
+            <tr>
+                <th>image</th>
                 <td>
-                    <button onclick="board_list()">목록</button>
-                    <button class="btn btn-primary" onclick="update_fn('${board.id}')">수정</button>
+                    <c:forEach items="${boardFileList}" var="boardFile">
+                        <img src="${pageContext.request.contextPath}/upload/${boardFile.storedFileName}"
+                             alt="" width="100" height="100">
+                    </c:forEach>
                 </td>
+            </tr>
+        </c:if>
+    </table>
+    <button onclick="board_list()">목록</button>
+    <button onclick="board_update()">수정</button>
+    <button onclick="board_delete()">삭제</button>
 
-                </tr>
-            </div>
-        </table>
+    <div id="pass-check" style="display: none;">
+        <input type="text" id="board-pass" placeholder="비밀번호 입력하세요">
+        <input type="button" onclick="pass_check()" value="확인">
+    </div>
+
+    <div id="comment-write-area">
+        <input type="text" id="comment-writer" placeholder="작성자 입력">
+        <input type="text" id="comment-contents" placeholder="내용 입력">
+        <button onclick="comment_write()">댓글작성</button>
+    </div>
+    <div id="comment-list-area">
+        <c:choose>
+            <c:when test="${commentList == null}">
+                <h3>작성된 댓글이 없습니다.</h3>
+            </c:when>
+            <c:otherwise>
+                <table id="comment-list">
+                    <tr>
+                        <th>작성자</th>
+                        <th>내용</th>
+                        <th>작성시간</th>
+                    </tr>
+                    <c:forEach items="${commentList}" var="comment">
+                        <tr>
+                            <td>${comment.commentWriter}</td>
+                            <td>${comment.commentContents}</td>
+                            <td>${comment.createdAt}</td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </c:otherwise>
+        </c:choose>
     </div>
 </div>
-
-<div id="comment-write-area">
-    <input id="comment-writer" name="commentWriter" placeholder="작성자" type="text">
-    <input id="comment-contents" name="commentContents" placeholder="내용" type="text">
-    <input type="button" value="등록" onclick="comment_write()">
-</div>
-<div id="comment-list-area">
-    <c:choose> <%-- choose,when,otherwise = if/else문과 같은 기능   --%>
-        <c:when test="${commentList == null}">
-            <h3>작성 된 댓글이 없습니다.</h3>
-        </c:when>
-        <c:otherwise>
-            <table id="comment-list">
-                <tr>
-                    <th>작성자</th>
-                    <th>내용</th>
-                    <th>작성시간</th>
-                </tr>
-                <c:forEach items="${commentList}" var="comment">
-                    <tr>
-                        <td>${comment.commentWriter}</td>
-                        <td>${comment.commentContents}</td>
-                        <td>${comment.createdAt}</td>
-                        <td></td>
-                    </tr>
-                </c:forEach>
-            </table>
-        </c:otherwise>
-    </c:choose>
-</div>
-
-<%@include file="component/footer.jsp" %>
 </body>
 <script>
-    const board_list = () => {
-        const page = '${page}';
-        location.href = "/board/list?page=" + page;
-    }
-
-    const update_fn = (id) => {
-        location.href = "/board/update?id=" + id;
-    }
-
     const comment_write = () => {
-        const writer = document.getElementById("comment-writer").value;
-        const contents = document.querySelector("#comment-contents").value;
+        const commentWriter = document.getElementById("comment-writer").value;
+        const commentContents = document.querySelector("#comment-contents").value;
         const boardId = '${board.id}';
-        const result = document.getElementById("comment-list-area")
+        const result = document.getElementById("comment-list-area");
         $.ajax({
             type: "post",
             url: "/comment/save",
             data: {
-                commentWriter: writer,
-                commentContents: contents,
+                commentWriter: commentWriter,
+                commentContents: commentContents,
                 boardId: boardId
             },
             success: function (res) {
-                console.log("리턴값 : ", res)
+                console.log("리턴값: ", res);
                 let output = "<table id=\"comment-list\">\n" +
                     "    <tr>\n" +
                     "        <th>작성자</th>\n" +
@@ -118,17 +113,35 @@
                 }
                 output += "</table>";
                 result.innerHTML = output;
-                // innerHTML = 해당 부분의 내용에 덮어쓰기가 됨.
-                // model = 이름을 다르게하면 하나의 메서드에서도 model을 여러번 쓸 수있음.
                 document.getElementById("comment-writer").value = "";
                 document.getElementById("comment-contents").value = "";
             },
             error: function () {
-                console.log("댓글 작성 실패")
+                console.log("댓글 작성 실패");
             }
-
-        })
-
+        });
+    }
+    const board_list = () => {
+        const page = '${page}';
+        location.href = "/board/list?page=" + page;
+    }
+    const board_update = () => {
+        const id = '${board.id}';
+        location.href = "/board/update?id=" + id;
+    }
+    const board_delete = () => {
+        const passArea = document.getElementById("pass-check");
+        passArea.style.display = "block";
+    }
+    const pass_check = () => {
+        const inputPass = document.getElementById("board-pass").value;
+        const pass = '${board.boardPass}';
+        const id = '${board.id}';
+        if (inputPass == pass) {
+            location.href = "/board/delete?id=" + id;
+        } else {
+            alert("비밀번호 불일치!");
+        }
     }
 </script>
 </html>

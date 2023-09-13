@@ -115,16 +115,10 @@ public class BoardController {
         return "boardDetail";
     }
 
-    @GetMapping("/check")
-    public String check(@RequestParam("id")Long id, Model model){
-        BoardDTO boardDTO = boardService.detail(id);
-        model.addAttribute("board", boardService.detail(boardDTO.getId()));
-        return "deleteCheck";
-    }
-
-    @PostMapping("/check")
-    public String check(@RequestParam("id")Long id){
+    @GetMapping("/delete")
+    public String delete(@RequestParam("id") Long id) {
         boardService.delete(id);
         return "redirect:/board/list";
     }
+
 }
