@@ -44,17 +44,20 @@
         </table>
     </div>
 </div>
-<div>
-    <p id="writer-save"></p>
-    <p id="comment-save"></p>
+
+<div id="comment-write-area">
+    <input id="comment-writer" name="commentWriter" placeholder="작성자" type="text">
+    <input id="comment-contents" name="commentContents" placeholder="내용" type="text">
+    <input type="button" value="등록" onclick="comment_write()">
+</div>
+<div id="comment-list-area">
+
 </div>
 <div>
-    <input id="commentWriter" name="commentWriter" placeholder="작성자" type="text">
-    <input id="commentContents" name="commentContents" placeholder="내용" type="text">
-    <input type="button" value="등록" onclick="comment_save()">
+    <c:forEach items='${commentList}' var="comment">
+
+    </c:forEach>
 </div>
-
-
 <%@include file="component/footer.jsp" %>
 </body>
 <script>
@@ -62,26 +65,42 @@
         location.href = "/board/update?id=" + id;
     }
 
-    const comment_save = () => {
-        const writer = document.getElementById("commentWriter").value;
-        const contents = document.getElementById("commentContents").value;
-        const writerSave = document.getElementById("writer-save")
-        const commentSave = document.getElementById("comment-save")
+    const comment_write = () => {
+        const writer = document.getElementById("comment-writer").value;
+        const contents = document.querySelector("#comment-contents").value;
+        const boardId = '${board.id}';
+        const result = document.getElementById("comment-list-area")
         $.ajax({
             type: "post",
             url: "/comment/save",
-            data: {commentWriter: writer, commentContents: contents},
-            success: function (res) {
-                let result = ""
-                "<table>";
-                result += "<tr>";
-                result += "<td>" + res.commentWriter + "</td>";
-                let result2 = "<td>" + res.commentContents + "</td>";
-                result2 += "</tr>";
-                result2 += "</table>";
-                writerSave.innerHTML = result;
-                commentSave.innerHTML = result2;
+            data: {
+                commentWriter: writer,
+                commentContents: contents,
+                boardId: boardId
             },
+            success: function (res) {
+                console.log("리턴값 : ", res)
+                let output = "<table id=\"comment-list\">\n" +
+                    "    <tr>\n" +
+                    "        <th>작성자</th>\n" +
+                    "        <th>내용</th>\n" +
+                    "        <th>작성시간</th>\n" +
+                    "    </tr>\n";
+                for (let i in res) {
+                    output += "    <tr>\n";
+                    output += "        <td>" + res[i].commentWriter + "</td>\n";
+                    output += "        <td>" + res[i].commentContents + "</td>\n";
+                    output += "        <td>" + res[i].createdAt + "</td>\n";
+                    output += "    </tr>\n";
+                }
+                output += "</table>";
+                result.innerHTML = output;
+                document.getElementById("comment-writer").value = "";
+                document.getElementById("comment-contents").value = "";
+            },
+            error: function () {
+                console.log("댓글 작성 실패")
+            }
 
         })
 
