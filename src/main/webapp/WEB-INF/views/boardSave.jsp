@@ -8,7 +8,7 @@
 </head>
 <body>
 <%@include file="component/header.jsp" %>
-<%@include file="component/nav.jsp" %>
+    <%@include file="component/nav.jsp" %>
 
 <form action="/board/save" method="post" enctype="multipart/form-data">
     작성자 : <input type="text" name="boardWriter" placeholder="작성자"> <br>
