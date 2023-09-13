@@ -36,6 +36,7 @@
                 </tr>
                 </c:if>
                 <td>
+                    <button onclick="board_list()">목록</button>
                     <button class="btn btn-primary" onclick="update_fn('${board.id}')">수정</button>
                 </td>
 
@@ -78,6 +79,11 @@
 <%@include file="component/footer.jsp" %>
 </body>
 <script>
+    const board_list = () => {
+        const page = '${page}';
+        location.href = "/board/list?page=" + page;
+    }
+
     const update_fn = (id) => {
         location.href = "/board/update?id=" + id;
     }

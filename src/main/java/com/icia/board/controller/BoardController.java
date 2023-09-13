@@ -3,6 +3,7 @@ package com.icia.board.controller;
 import com.icia.board.dto.BoardDTO;
 import com.icia.board.dto.BoardFileDTO;
 import com.icia.board.dto.CommentDTO;
+import com.icia.board.dto.PageDTO;
 import com.icia.board.service.BoardService;
 //import jdk.internal.icu.text.NormalizerBase;
 import com.icia.board.service.CommentService;
@@ -39,16 +40,44 @@ public class BoardController {
         return "redirect:/board/list";
     }
 
+    // /board?id=1
+    // /board/list?page=1
     @GetMapping("/list")
-    public String list(Model model){
-        List<BoardDTO> boardDTOList = boardService.list();
+    public String list(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                       Model model){
+        List<BoardDTO> boardDTOList = boardService.pagingList(page);
         model.addAttribute("boardList", boardDTOList);
-        System.out.println("model = " + model);
+
+        PageDTO pageDTO = boardService.pageNumber(page);
+        System.out.println("pageDTO = " + pageDTO);
+        model.addAttribute("paging", pageDTO);
         return "boardList";
     }
 
+    @GetMapping("/search")
+    public String search (@RequestParam("q") String q,
+                          @RequestParam("type") String type,
+                          Model model){
+        List<BoardDTO> boardDTOList = boardService.searchList(q,type);
+        model.addAttribute("boardList", boardDTOList);
+        return "boardList";
+    }
+    @GetMapping("/sample")
+    public String sampleData() {
+        for (int i = 1; i <= 20; i++) {
+            BoardDTO boardDTO = new BoardDTO();
+            boardDTO.setBoardWriter("aa");
+            boardDTO.setBoardTitle("title" + i);
+            boardDTO.setBoardContents("contents" + i);
+            boardDTO.setBoardPass("pass" + i);
+            boardService.sampleData(boardDTO);
+        }
+        return "redirect:/board/list";
+    }
+
     @GetMapping("/detail")
-    public String detail(@RequestParam("id")Long id, Model model){
+    public String detail(@RequestParam("id")Long id,@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                         Model model){
         boardService.updateHits(id);
         BoardDTO boardDTO = boardService.detail(id);
         model.addAttribute("board", boardDTO);
@@ -65,6 +94,7 @@ public class BoardController {
         }else{
             model.addAttribute("commentList", commentDTOList);
         }
+        model.addAttribute("page", page);
         return "boardDetail";
     }
 
@@ -95,6 +125,6 @@ public class BoardController {
     @PostMapping("/check")
     public String check(@RequestParam("id")Long id){
         boardService.delete(id);
-        return "boardList";
+        return "redirect:/board/list";
     }
 }

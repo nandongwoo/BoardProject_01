@@ -40,4 +40,19 @@
         select * from board_file_table where boardId = #{boardId}
     </select>
 
+    <select id="pagingList" parameterType="java.util.HashMap" resultType="board">
+        select id, boardWriter, boardTitle, boardPass,
+               date_format(createdAt, "%y-%m-%d %H:%i:%s") as createdAt, boardHits
+        from board_table order by id desc limit #{start}, #{limit}
+    </select>
+    <select id="count" resultType="Integer">
+        select count(id) from board_table
+    </select>
+    <select id="search" parameterType="java.util.HashMap" resultType="board">
+        select id, boardWriter, boardTitle, boardPass,
+               date_format(createdAt, "%y-%m-%d %H:%i:%s") as createdAt, boardHits
+        from board_table  where ${type} like concat('%',#{q},'%') order by id desc
+    </select>
+
+
 </mapper>
