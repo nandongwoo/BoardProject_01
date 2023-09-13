@@ -64,9 +64,9 @@
                 </tr>
                 <c:forEach items="${commentList}" var="comment">
                     <tr>
-                        <td>${comment.commetnWriter}</td>
-                        <td>${comment.commetnContents}</td>
-                        <td>${comment.createAt}</td>
+                        <td>${comment.commentWriter}</td>
+                        <td>${comment.commentContents}</td>
+                        <td>${comment.createdAt}</td>
                         <td></td>
                     </tr>
                 </c:forEach>
