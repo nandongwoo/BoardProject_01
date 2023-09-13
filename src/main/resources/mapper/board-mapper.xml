@@ -15,7 +15,9 @@
 
 
     <select id="list" parameterType="board" resultType="board">
-        select id, boardWriter, boardTitle, boardPass, date_format(createdAt, "%y-%m-%d %H:%i:%s") as createdAt, boardHits from board_table;
+        select id, boardWriter, boardTitle, boardPass, date_format(createdAt, "%y-%m-%d %H:%i:%s") as createdAt, boardHits
+        from board_table order by id desc
+
     </select>
 
     <select id="findById" parameterType="Long" resultType="board">

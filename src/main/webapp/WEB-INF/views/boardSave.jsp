@@ -15,7 +15,7 @@
     비밀번호 : <input type="text" name="boardPass" placeholder="비밀번호"> <br>
     제목 : <input type="text" name="boardTitle" placeholder="제목"> <br>
     글내용 : <input type="text" name="boardContents" placeholder="글내용"> <br>
-    <input type="file" name = "boardFile"> <br>
+    <input type="file" name = "boardFile" multiple> <br>
     <input type="submit" value="글작성">
 </form>
 
