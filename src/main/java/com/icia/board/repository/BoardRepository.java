@@ -2,6 +2,7 @@ package com.icia.board.repository;
 
 import com.icia.board.dto.BoardDTO;
 import com.icia.board.dto.BoardFileDTO;
+import com.icia.board.dto.PageDTO;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -54,8 +55,13 @@ public class BoardRepository {
         return sql.selectOne("Board.count");
     }
 
-    public List<BoardDTO> searchList(Map<String, String> searchparam) {
+    public List<BoardDTO> searchList(Map<String, Object> searchparam) {
         return sql.selectList("Board.search", searchparam);
 
+    }
+
+
+    public int boardSearchCount(Map<String, String> pagingParams) {
+        return sql.selectOne("Board.searchCount", pagingParams);
     }
 }

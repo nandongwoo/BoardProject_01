@@ -14,7 +14,7 @@
 <br>
 <div id="section">
     <div claas="container" id="search-area">
-        <form action="/board/search" method="get">
+        <form action="/board/list" method="get">
             <select name = "type">
                 <option value = "boardTitle">제목</option>
                 <option value = "boardWriter">작성자</option>
@@ -36,7 +36,7 @@
 <c:forEach items="${boardList}" var="board">
     <tr>
         <td>${board.id}</td>
-        <td><a href="/board/detail?id=${board.id}&page=${paging.page}">${board.boardTitle}</a></td>
+        <td><a href="/board/detail?id=${board.id}&page=${paging.page}&q=${q}&type=${type}">${board.boardTitle}</a></td>
         <td>${board.boardWriter}</td>
         <td>${board.createdAt}</td>
         <td>${board.boardHits}</td>
@@ -59,7 +59,7 @@
             <%-- 1페이지가 아닌 경우에는 [이전]을 클릭하면 현재 페이지보다 1 작은 페이지 요청 --%>
             <c:otherwise>
                 <li class="page-item">
-                    <a class="page-link" href="/board/list?page=${paging.page-1}">[이전]</a>
+                    <a class="page-link" href="/board/list?page=${paging.page-1}&q=${q}&type=${type}">[이전]</a>
                 </li>
             </c:otherwise>
         </c:choose>
@@ -76,7 +76,7 @@
 
                 <c:otherwise>
                     <li class="page-item">
-                        <a class="page-link" href="/board/list?page=${i}">${i}</a>
+                        <a class="page-link" href="/board/list?page=${i}&q=${q}&type=${type}">${i}</a>
                     </li>
                 </c:otherwise>
             </c:choose>
@@ -90,7 +90,7 @@
             </c:when>
             <c:otherwise>
                 <li class="page-item">
-                    <a class="page-link" href="/board/list?page=${paging.page+1}">[다음]</a>
+                    <a class="page-link" href="/board/list?page=${paging.page+1}&q=${q}&type=${type}">[다음]</a>
                 </li>
             </c:otherwise>
         </c:choose>
